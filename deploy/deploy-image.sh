@@ -44,7 +44,9 @@ fi
 
 if IMAGE="$image" docker compose -f "$COMPOSE_FILE" up -d --wait --wait-timeout 90; then
   if revision=$(curl --fail --silent --show-error --max-time 5 http://127.0.0.1:8089/version.txt) && [ "$revision" = "$image_tag" ]; then
-    [ -z "$previous" ] || printf '%s\n' "$previous" > "$previous_file"
+    if [ -n "$previous" ] && [ "$previous" != "$image" ]; then
+      printf '%s\n' "$previous" > "$previous_file"
+    fi
     printf '%s\n' "$image" > "$current_file"
     echo "portfolio deployed: $image"
     exit 0

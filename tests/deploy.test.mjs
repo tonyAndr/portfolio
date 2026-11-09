@@ -140,6 +140,29 @@ test('successful deployment records current and previous image tags', async (t) 
   assert.doesNotMatch(log, / args=compose .* down/);
 });
 
+test('successful same-tag redeployment preserves the last distinct previous image', async (t) => {
+  const harness = await makeHarness();
+  t.after(() => rm(harness.root, { recursive: true, force: true }));
+  const previousTag = `portfolio:${tagA}\n`;
+  await writeFile(
+    path.join(harness.deployDir, '.current-image'),
+    `portfolio:${tagB}\n`,
+  );
+  await writeFile(path.join(harness.deployDir, '.previous-image'), previousTag);
+
+  const result = harness.run(`deploy ${tagB}`, { MOCK_CURL_REVISION: tagB });
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(
+    await readFile(path.join(harness.deployDir, '.current-image'), 'utf8'),
+    `portfolio:${tagB}\n`,
+  );
+  assert.equal(
+    await readFile(path.join(harness.deployDir, '.previous-image'), 'utf8'),
+    previousTag,
+  );
+});
+
 test('failed version verification restores the previous image without changing pointers', async (t) => {
   const harness = await makeHarness();
   t.after(() => rm(harness.root, { recursive: true, force: true }));
@@ -168,6 +191,36 @@ test('failed version verification restores the previous image without changing p
   const log = await readFile(harness.logPath, 'utf8');
   assert.match(
     log,
+    new RegExp(`docker IMAGE=portfolio:${tagA} args=compose .* up -d --wait`),
+  );
+});
+
+test('curl failure is rejected even when it emits the matching revision', async (t) => {
+  const harness = await makeHarness();
+  t.after(() => rm(harness.root, { recursive: true, force: true }));
+  const previousTag = `portfolio:${'c'.repeat(40)}\n`;
+  await writeFile(
+    path.join(harness.deployDir, '.current-image'),
+    `portfolio:${tagA}\n`,
+  );
+  await writeFile(path.join(harness.deployDir, '.previous-image'), previousTag);
+
+  const result = harness.run(`deploy ${tagB}`, {
+    MOCK_CURL_FAIL: '1',
+    MOCK_CURL_OUTPUT: tagB,
+  });
+
+  assert.notEqual(result.status, 0);
+  assert.equal(
+    await readFile(path.join(harness.deployDir, '.current-image'), 'utf8'),
+    `portfolio:${tagA}\n`,
+  );
+  assert.equal(
+    await readFile(path.join(harness.deployDir, '.previous-image'), 'utf8'),
+    previousTag,
+  );
+  assert.match(
+    await readFile(harness.logPath, 'utf8'),
     new RegExp(`docker IMAGE=portfolio:${tagA} args=compose .* up -d --wait`),
   );
 });

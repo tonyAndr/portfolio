@@ -20,6 +20,8 @@ for (const [pathname, language] of [
   );
   assert.equal(response.headers.get('x-content-type-options'), 'nosniff');
   const html = await response.text();
+  assert.match(html, /mailto:andropov.anton@gmail.com/);
+  assert.doesNotMatch(html, /cdn-cgi\/l\/email-protection/);
   assert.match(html, new RegExp(`<html lang="${language}"`));
   assert.doesNotMatch(html, /<script(?![^>]*\bsrc=)[^>]*>/);
   const assets = new Set(

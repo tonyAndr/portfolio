@@ -18,4 +18,6 @@ The connected browser host was unavailable during implementation. Actual visual 
 
 ## Production checks
 
-The first successful Actions deployment is verified against its exact Git SHA and Docker health before switching public DNS. Live verification covers both language routes, www/HTTPS redirects, the sitemap, robots, a missing-page 404, and static asset responses. Deployment details and rollback instructions are in [deployment.md](deployment.md).
+The first Actions deployment passed all checks and the exact Git SHA was verified on the healthy Hetzner container before changing public DNS. Live HTTP checks passed for both language routes, static assets, the sitemap, robots, missing-page 404s, and protected private paths. HTTP and www permanently redirect to the canonical HTTPS origin, preserving paths and queries. Both edge and origin certificates are checked with normal trust verification.
+
+Public checks also identified Cloudflare email rewriting; the contact link is explicitly excluded so it remains usable without JavaScript. Container checks identified and corrected a redirect that included the internal port. Deployment details and rollback instructions are in [deployment.md](deployment.md).

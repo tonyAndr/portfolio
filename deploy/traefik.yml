@@ -9,6 +9,10 @@ http:
         - websecure
       tls:
         certResolver: letsencrypt
+        domains:
+          - main: apov.dev
+            sans:
+              - www.apov.dev
     portfolio-www:
       rule: 'Host(`www.apov.dev`)'
       service: portfolio
@@ -16,8 +20,7 @@ http:
         - websecure
       middlewares:
         - portfolio-canonical
-      tls:
-        certResolver: letsencrypt
+      tls: {}
   middlewares:
     portfolio-canonical:
       redirectRegex:

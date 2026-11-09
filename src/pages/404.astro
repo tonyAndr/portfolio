@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  locale="en"
+  title="Page not found — Anton Andropov"
+  description="Return to Anton Andropov’s portfolio."
+  path="/404.html"
+  noindex
+>
+  <main class="error-page wrap">
+    <a class="wordmark" href="/">
+      Anton Andropov<span class="name-dot">.</span>
+    </a>
+    <p class="eyebrow">404</p>
+    <h1>Lost in space?</h1>
+    <p>Page not found. Return to the portfolio.</p>
+    <a class="button-primary" href="/">
+      English portfolio →
+    </a>
+    <p lang="es">Página no encontrada. Volver al portfolio.</p>
+    <a class="text-link" href="/es/" lang="es">
+      Portfolio en español →
+    </a>
+  </main>
+</BaseLayout>

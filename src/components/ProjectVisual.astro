@@ -1,0 +1,84 @@
+---
+interface Props {
+  kind: 'automation' | 'indexing' | 'cherry' | 'travel';
+  locale: 'en' | 'es';
+}
+const { kind, locale } = Astro.props;
+const es = locale === 'es';
+---
+
+<div class:list={['project-art', `art-${kind}`]} aria-hidden="true">
+  {kind === 'automation' && (
+    <>
+      <div class="flow-node node-left">CRM</div>
+      <div class="flow-line line-left"></div>
+      <div class="flow-hub">
+        <span>AI</span>
+      </div>
+      <div class="flow-line line-right"></div>
+      <div class="flow-node node-right">API</div>
+      <div class="art-caption">
+        {es ? 'Sistemas conectados' : 'Connecting systems'}
+      </div>
+    </>
+  )}
+  {kind === 'indexing' && (
+    <>
+      <div class="index-orbit orbit-one"></div>
+      <div class="index-orbit orbit-two"></div>
+      <div class="index-core">
+        <span>↗</span>
+      </div>
+      <span class="orbit-label label-api">API</span>
+      <span class="orbit-label label-web">Web</span>
+      <span class="orbit-label label-bot">Bot</span>
+      <div class="art-caption">
+        {es ? 'Un backend. Varios clientes.' : 'One backend. Multiple clients.'}
+      </div>
+    </>
+  )}
+  {kind === 'cherry' && (
+    <>
+      <svg class="cherry-graph" viewBox="0 0 440 250" fill="none">
+        <g stroke="currentColor" stroke-width="1">
+          <path d="m80 70 140 60 120-70M80 70l20 130 120-70 120 70V60M100 200l240 0M220 130l10-100" />
+        </g>
+        <g fill="currentColor">
+          <circle cx="80" cy="70" r="7" />
+          <circle cx="100" cy="200" r="7" />
+          <circle cx="340" cy="60" r="7" />
+          <circle cx="340" cy="200" r="7" />
+          <circle cx="230" cy="30" r="5" />
+        </g>
+        <circle cx="220" cy="130" r="23" fill="#e89bbf" />
+        <circle cx="220" cy="130" r="7" fill="#501b40" />
+      </svg>
+      <div class="art-caption">
+        {es ? 'Conexiones con sentido' : 'Meaningful connections'}
+      </div>
+    </>
+  )}
+  {kind === 'travel' && (
+    <>
+      <svg class="travel-map" viewBox="0 0 440 270" fill="none">
+        <g stroke="currentColor" opacity=".18">
+          <path d="M-20 90Q80-20 200 80T470 100M-20 110Q80 0 200 100T470 120M-20 130Q80 20 200 120T470 140M-20 150Q80 40 200 140T470 160M-20 170Q80 60 200 160T470 180M-20 190Q80 80 200 180T470 200M-20 210Q80 100 200 200T470 220" />
+        </g>
+        <path
+          d="M65 200C140 220 100 120 190 145S250 80 345 65"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-dasharray="4 6"
+        />
+        <circle cx="65" cy="200" r="6" fill="currentColor" />
+        <circle cx="345" cy="65" r="8" fill="currentColor" />
+        <circle cx="345" cy="65" r="18" stroke="currentColor" opacity=".4" />
+      </svg>
+      <div class="art-caption">
+        {es
+          ? 'Reservas y Camino de Santiago'
+          : 'Bookings & the Camino de Santiago'}
+      </div>
+    </>
+  )}
+</div>

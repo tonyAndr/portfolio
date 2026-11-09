@@ -1,0 +1,61 @@
+---
+import '../styles/global.css';
+interface Props {
+  locale: 'en' | 'es';
+  title: string;
+  description: string;
+  path?: string;
+  noindex?: boolean;
+}
+const {
+  locale,
+  title,
+  description,
+  path = locale === 'es' ? '/es/' : '/',
+  noindex = false,
+} = Astro.props;
+const origin = 'https://apov.dev';
+const canonical = new URL(path, origin);
+const socialImage = `${origin}/og/${locale}.png`;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#14091d" />
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={`${origin}/`} />
+    <link rel="alternate" hreflang="es" href={`${origin}/es/`} />
+    <link rel="alternate" hreflang="x-default" href={`${origin}/`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={locale === 'es' ? 'es_ES' : 'en_GB'} />
+    <meta
+      property="og:locale:alternate"
+      content={locale === 'es' ? 'en_GB' : 'es_ES'}
+    />
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content={
+        locale === 'es'
+          ? 'Anton Andropov — ingeniero de software en Málaga'
+          : 'Anton Andropov — software engineer in Málaga'
+      }
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>

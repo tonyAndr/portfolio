@@ -1,0 +1,31 @@
+# Install once in /home/tony/docker/traefik/config/portfolio.yml.
+# Routine GitHub deployments do not modify Traefik.
+http:
+  routers:
+    portfolio:
+      rule: 'Host(`apov.dev`)'
+      service: portfolio
+      entryPoints:
+        - websecure
+      tls:
+        certResolver: letsencrypt
+    portfolio-www:
+      rule: 'Host(`www.apov.dev`)'
+      service: portfolio
+      entryPoints:
+        - websecure
+      middlewares:
+        - portfolio-canonical
+      tls:
+        certResolver: letsencrypt
+  middlewares:
+    portfolio-canonical:
+      redirectRegex:
+        regex: '^https://www\.apov\.dev/(.*)'
+        replacement: 'https://apov.dev/${1}'
+        permanent: true
+  services:
+    portfolio:
+      loadBalancer:
+        servers:
+          - url: 'http://127.0.0.1:8089'

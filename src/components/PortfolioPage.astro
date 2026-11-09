@@ -3,6 +3,7 @@ import { Image } from 'astro:assets';
 import portrait from '../assets/anton-nebula-portrait.png';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Arrow from './Arrow.astro';
+import HeroGeometry from './HeroGeometry.astro';
 import ProjectVisual from './ProjectVisual.astro';
 import { content, type Locale } from '../content';
 import { profile } from '../data/profile';
@@ -62,7 +63,7 @@ const year = new Date().getFullYear();
       </nav>
     </header>
     <main id="main">
-      <section class="hero wrap" aria-labelledby="hero-title">
+      <section class="hero wrap" aria-labelledby="hero-title" data-hero-motion>
         <div class="hero-copy">
           <p class="eyebrow">
             <span class="small-star" aria-hidden="true">
@@ -111,8 +112,6 @@ const year = new Date().getFullYear();
           <div class="nebula-cloud cloud-two" aria-hidden="true"></div>
           <div class="nebula-cloud cloud-three" aria-hidden="true"></div>
           <div class="starfield" aria-hidden="true"></div>
-          <div class="celestial-orbit" aria-hidden="true"></div>
-          <div class="celestial-orbit orbit-secondary" aria-hidden="true"></div>
           <div class="portrait-space">
             <Image
               class="hero-portrait"
@@ -125,16 +124,10 @@ const year = new Date().getFullYear();
               quality={90}
             />
           </div>
-          <div class="geometry geometry-top" aria-hidden="true">
-            <svg
-              viewBox="0 0 100 100"
-              fill="none"
-              stroke="currentColor"
-              stroke-width=".8"
-            >
-              <path d="m50 5 43 25v45L50 100 7 75V30L50 5Zm0 0v50m43-25L50 55 7 30m43 25v45" />
-            </svg>
-          </div>
+          <HeroGeometry
+            pauseLabel={t.motion.pause}
+            resumeLabel={t.motion.resume}
+          />
           <span class="scene-star star-one" aria-hidden="true">
             ✧
           </span>
@@ -157,9 +150,6 @@ const year = new Date().getFullYear();
           <a href="#about" aria-label={t.nav.about}>
             <span aria-hidden="true">↓</span>
           </a>
-          <span class="hero-index" aria-hidden="true">
-            01 — 05
-          </span>
         </div>
       </section>
       <section
@@ -341,6 +331,16 @@ const year = new Date().getFullYear();
     </footer>
   </div>
   <script>
+    import { initHeroMotion } from '../scripts/hero-motion';
+
+    const hero = document.querySelector<HTMLElement>('[data-hero-motion]');
+    if (hero) {
+      const disposeMotion = initHeroMotion(hero);
+      window.addEventListener('pagehide', (event) => {
+        if (!event.persisted) disposeMotion();
+      });
+    }
+
     const known = new Set([
       '#top',
       '#about',

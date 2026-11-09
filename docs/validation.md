@@ -10,7 +10,7 @@ Validated on 9 November 2026 with Node 22.23.4 and pinned npm dependencies:
 - `npm run format:check`: source and documentation formatting.
 - Independent deployment review: corrected failed-first-deployment cleanup and made revision verification reject a failed HTTP request.
 
-The small language-switch enhancement is an external module so nginx's `script-src 'self'` policy permits it without inline JavaScript. Native links and complete content work without JavaScript. Motion is static by default, and smooth scrolling is disabled for reduced motion.
+The language switch and hero-motion controller are bundled as external modules so nginx's `script-src 'self'` policy permits them without inline JavaScript. Native links and complete content work without JavaScript. Fine-pointer devices animate three wireframes and orbital rings with damped cursor inertia and slow CSS drift. A localized pause control stops both effects. Touch and reduced-motion devices use a static composition; hidden tabs and offscreen heroes suspend motion. The JavaScript frame loop stops after the spring settles. Smooth scrolling is disabled for reduced motion.
 
 ## Verification limits
 

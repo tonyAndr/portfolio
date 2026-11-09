@@ -46,6 +46,7 @@ export interface PortfolioContent {
   support: { title: string; body: string; disclaimer: string };
   footer: { backToTop: string; note: string };
   portraitAlt: string;
+  motion: { pause: string; resume: string };
 }
 
 export { en } from './en';

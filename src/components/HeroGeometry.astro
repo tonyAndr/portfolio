@@ -1,0 +1,81 @@
+---
+interface Props {
+  pauseLabel: string;
+  resumeLabel: string;
+}
+const { pauseLabel, resumeLabel } = Astro.props;
+---
+
+<div class="wireframe-field" aria-hidden="true">
+  <div class="orbit-motion" data-motion-layer data-depth="-0.22">
+    <div class="orbital-drift">
+      <div class="celestial-orbit"></div>
+      <div class="celestial-orbit orbit-secondary"></div>
+    </div>
+  </div>
+  <div
+    class="geometry geometry-top"
+    data-motion-layer
+    data-depth="0.9"
+    data-rotation="15"
+  >
+    <div class="geometry-drift">
+      <svg
+        viewBox="0 0 100 100"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+        focusable="false"
+      >
+        <path d="m50 5 43 25v45L50 100 7 75V30L50 5Zm0 0v50m43-25L50 55 7 30m43 25v45" />
+      </svg>
+    </div>
+  </div>
+  <div
+    class="geometry geometry-left"
+    data-motion-layer
+    data-depth="-0.6"
+    data-rotation="-14"
+  >
+    <div class="geometry-drift">
+      <svg
+        viewBox="0 0 100 120"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.1"
+        focusable="false"
+      >
+        <path d="m50 4 43 56-43 56L7 60 50 4Zm0 0v112M7 60l43-18 43 18-43 18L7 60Z" />
+      </svg>
+    </div>
+  </div>
+  <div
+    class="geometry geometry-bottom"
+    data-motion-layer
+    data-depth="0.5"
+    data-rotation="24"
+  >
+    <div class="geometry-drift">
+      <svg
+        viewBox="0 0 100 100"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1"
+        focusable="false"
+      >
+        <path d="m30 8 48 9 15 47-38 29L8 68 30 8Zm0 0 25 85M78 17 8 68l85-4M30 8l63 56M78 17 55 93" />
+      </svg>
+    </div>
+  </div>
+</div>
+<button
+  class="motion-toggle"
+  type="button"
+  data-motion-toggle
+  data-pause-label={pauseLabel}
+  data-resume-label={resumeLabel}
+  aria-pressed="false"
+  hidden
+>
+  {pauseLabel}
+</button>

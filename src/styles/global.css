@@ -151,12 +151,12 @@ svg {
   animation-duration: 48s;
   animation-delay: -24s;
 }
-.site-stars {
+.site-polygons {
   position: absolute;
   inset: 0;
-  opacity: 0.75;
+  opacity: 0.9;
 }
-.site-stars canvas {
+.site-polygons canvas {
   display: block;
   position: absolute;
   inset: 0;
@@ -202,8 +202,8 @@ svg {
   }
 }
 @media (max-width: 767px) {
-  .site-stars {
-    opacity: 0.6;
+  .site-polygons {
+    opacity: 0.75;
   }
   .site-aurora {
     opacity: 0.8;

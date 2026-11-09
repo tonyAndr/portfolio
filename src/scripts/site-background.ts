@@ -191,36 +191,44 @@ function particleOptions(width: number): ISourceOptions {
     pauseOnBlur: false,
     pauseOnOutsideViewport: false,
     particles: {
-      color: { value: ['#c4b5fd', '#a78bfa', '#ddd6fe'] },
-      links: {
-        enable: true,
-        distance: 145,
-        color: '#a78bfa',
-        opacity: 0.11,
-        width: 0.6,
+      paint: {
+        color: { value: ['#d7b8f0', '#b69be4', '#db9ac4'] },
+        fill: { enable: true, opacity: 0.035 },
+        stroke: { width: 1, opacity: 1 },
       },
       move: {
         enable: true,
         direction: 'none',
         random: true,
         straight: false,
-        speed: { min: 0.18, max: 0.4 },
+        speed: { min: 0.1, max: 0.24 },
         outModes: { default: 'out' },
       },
       number: {
-        value: mobile ? 24 : 52,
+        value: mobile ? 9 : 20,
         density: { enable: false, height: 900, width: 1600 },
       },
       opacity: {
-        value: { min: 0.18, max: 0.55 },
+        value: { min: 0, max: 0.55 },
         animation: {
           enable: true,
-          speed: 0.25,
-          sync: false,
+          speed: { min: 0.18, max: 0.4 },
+          startValue: 'random',
+          sync: true,
         },
       },
-      shape: { type: 'circle' },
-      size: { value: { min: 0.7, max: 1.8 } },
+      shape: {
+        type: 'polygon',
+        options: {
+          polygon: [{ sides: 3 }, { sides: 4 }, { sides: 5 }, { sides: 6 }],
+        },
+      },
+      size: { value: { min: mobile ? 12 : 14, max: mobile ? 30 : 48 } },
+      rotate: {
+        value: { min: 0, max: 360 },
+        direction: 'random',
+        animation: { enable: true, speed: { min: 0.2, max: 0.6 }, sync: true },
+      },
     },
   };
 }
@@ -229,20 +237,20 @@ async function loadParticles(
   host: HTMLElement,
   options: ISourceOptions,
 ): Promise<ParticleContainer | undefined> {
-  const [engineModule, basicModule, interactivityModule, linksModule] =
+  const [engineModule, basicModule, polygonModule, rotateModule] =
     await Promise.all([
       import('@tsparticles/engine'),
       import('@tsparticles/basic'),
-      import('@tsparticles/plugin-interactivity'),
-      import('@tsparticles/interaction-particles-links'),
+      import('@tsparticles/shape-polygon'),
+      import('@tsparticles/updater-rotate'),
     ]);
   const engine = engineModule.tsParticles;
   await basicModule.loadBasic(engine);
-  await interactivityModule.loadInteractivityPlugin(engine);
-  await linksModule.loadParticlesLinksInteraction(engine);
+  await polygonModule.loadPolygonShape(engine);
+  await rotateModule.loadRotateUpdater(engine);
   await engine.init();
   return engine.load({
-    id: host.id || 'site-stars',
+    id: host.id || 'site-polygons',
     element: host,
     options,
   });

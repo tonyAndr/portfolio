@@ -5,4 +5,4 @@
 - Fonts: self-hosted Inter and Space Grotesk from Fontsource, under the SIL Open Font License. License copies are in `public/licenses/`.
 - The official institutional mark and its source are documented in [support-notes.md](support-notes.md).
 - The watermarked nebula reference and raw source documents are excluded from Git, the Docker context, and the website.
-- The full-page particle field uses tsParticles 4.5.3: the basic bundle, interactivity foundation, and particle-links module. Packages are bundled locally; no CDN, telemetry, remote images, or third-party requests are needed. The MIT license is included at `public/licenses/tsparticles-MIT.txt`.
+- The full-page fading polygon field uses tsParticles 4.5.3: the basic bundle, polygon shape, and rotation updater. Packages are bundled locally; no CDN, telemetry, remote images, or third-party requests are needed. The MIT license is included at `public/licenses/tsparticles-MIT.txt`.

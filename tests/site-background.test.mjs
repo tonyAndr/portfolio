@@ -69,7 +69,7 @@ function fixture({
   const host = {
     ownerDocument: document,
     parentElement: outer,
-    id: 'site-stars',
+    id: 'site-polygons',
   };
   return { document, host, idleCallbacks, media, outer, view };
 }
@@ -114,11 +114,22 @@ test('starts one animation loop after idle and suspends only for hidden tabs or 
   assert.equal(call[1].fullScreen.enable, false);
   assert.equal(call[1].detectRetina, false);
   assert.equal(call[1].fpsLimit, 30);
-  assert.equal(call[1].particles.number.value, 52);
-  assert.equal(call[1].particles.links.distance, 145);
-  assert.equal(call[1].particles.links.opacity, 0.11);
-  assert.equal(call[1].particles.links.width, 0.6);
-  assert.deepEqual(call[1].particles.move.speed, { min: 0.18, max: 0.4 });
+  assert.ok(call[1].particles.number.value <= 24);
+  assert.equal(
+    call[1].particles.shape.type,
+    'polygon',
+    'background must contain recognizable polygons, not dots',
+  );
+  assert.ok(call[1].particles.size.value.min >= 12);
+  assert.ok(call[1].particles.paint.stroke.width > 0);
+  assert.equal(call[1].particles.links, undefined, 'no constellation network');
+  assert.equal(
+    call[1].particles.opacity.value.min,
+    0,
+    'polygons must disappear completely between appearances',
+  );
+  assert.equal(call[1].particles.opacity.animation.enable, true);
+  assert.equal(call[1].particles.rotate.animation.enable, true);
   assert.equal(
     container.playCalls,
     1,
@@ -186,7 +197,7 @@ test('a hidden or reduced-motion change during async loading keeps the resolved 
     }
     assert.equal(outer.hasAttribute('data-background-active'), false);
     assert.equal(options.fpsLimit, 24);
-    assert.equal(options.particles.number.value, 24);
+    assert.ok(options.particles.number.value <= 12);
     resolveLoader(container);
     await flushPromises();
     assert.equal(container.playCalls, 0);
@@ -231,4 +242,93 @@ test('cleanup cancels scheduled or late loading work and removes page lifecycle 
   assert.equal(container.destroyCalls, 1);
   assert.equal(outer.hasAttribute('data-background-active'), false);
   assert.equal(view.idleCount(), 0);
+});
+
+test('the real renderer draws multi-sided outlines and fades them fully out and back in', async () => {
+  const [
+    { tsParticles, ParticlesOptions },
+    { loadBasic },
+    { loadPolygonShape },
+    { loadRotateUpdater },
+  ] = await Promise.all([
+    import('@tsparticles/engine'),
+    import('@tsparticles/basic'),
+    import('@tsparticles/shape-polygon'),
+    import('@tsparticles/updater-rotate'),
+  ]);
+  await loadBasic(tsParticles);
+  await loadPolygonShape(tsParticles);
+  await loadRotateUpdater(tsParticles);
+  await tsParticles.init();
+
+  const { host, view } = fixture();
+  let supplied;
+  const cleanup = initSiteBackground(host, async (_host, options) => {
+    supplied = options;
+    return fakeContainer();
+  });
+  view.runIdle();
+  await flushPromises();
+  cleanup();
+
+  const material = new ParticlesOptions(tsParticles.pluginManager);
+  material.load(supplied.particles);
+  assert.ok(
+    material.paint.stroke.width > 0,
+    'real v4 paint options retain outlines',
+  );
+  assert.ok(
+    material.paint.fill.opacity < 0.1,
+    'polygon interiors remain translucent',
+  );
+  const drawer = await tsParticles.pluginManager.initializers.shapes.get(
+    'polygon',
+  )({});
+  for (const shape of supplied.particles.shape.options.polygon) {
+    const vertices = [];
+    let closed = false;
+    const particle = { shapeData: shape };
+    particle.sides = drawer.getSidesCount(particle);
+    drawer.draw({
+      particle,
+      radius: 30,
+      context: {
+        beginPath() {},
+        moveTo(x, y) {
+          vertices.push([x, y]);
+        },
+        lineTo(x, y) {
+          vertices.push([x, y]);
+        },
+        closePath() {
+          closed = true;
+        },
+      },
+    });
+    assert.equal(vertices.length, shape.sides);
+    assert.ok(closed);
+  }
+
+  const opacityUpdater =
+    await tsParticles.pluginManager.initializers.updaters.get('opacity')({
+      retina: { reduceFactor: 1 },
+    });
+  const options = {};
+  opacityUpdater.loadOptions(options, {
+    opacity: {
+      ...supplied.particles.opacity,
+      animation: { ...supplied.particles.opacity.animation, startValue: 'max' },
+    },
+  });
+  const particle = { options, destroyed: false, spawning: false };
+  opacityUpdater.init(particle);
+  let disappeared = false;
+  let reappeared = false;
+  for (let frame = 0; frame < 1500; frame++) {
+    opacityUpdater.update(particle, { factor: 1, value: 1000 / 60 });
+    if (particle.opacity.value === 0) disappeared = true;
+    if (disappeared && particle.opacity.value > 0.1) reappeared = true;
+  }
+  assert.ok(disappeared, 'opacity reaches zero');
+  assert.ok(reappeared, 'polygons return after disappearing');
 });

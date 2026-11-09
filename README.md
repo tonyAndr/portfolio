@@ -30,7 +30,7 @@ node scripts/smoke.mjs http://127.0.0.1:54321 # Verify a running nginx container
 - `src/components/`: shared page and original conceptual project illustrations.
 - `src/layouts/`: document language, canonical, social, and alternate-language metadata.
 - `src/styles/`: responsive layout, self-hosted fonts, full-page aurora composition, reduced-motion rules.
-- `src/scripts/`: inertial hero geometry and the autonomous tsParticles background lifecycle.
+- `src/scripts/`: inertial hero geometry and the autonomous polygon-background lifecycle.
 - `src/assets/`: prepared portrait; Astro emits appropriately sized WebP variants.
 - `public/`: favicon, social cards, official institutional assets, and font licenses.
 - `tests/`: built-site regression checks using Node's test runner.

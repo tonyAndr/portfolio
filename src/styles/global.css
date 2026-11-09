@@ -359,13 +359,7 @@ svg {
   object-position: center bottom;
   border-radius: 0;
   mask-image:
-    linear-gradient(
-      to bottom,
-      transparent 0%,
-      black 13%,
-      black 76%,
-      transparent 99%
-    ),
+    linear-gradient(to bottom, black 0%, black 76%, transparent 99%),
     linear-gradient(to right, transparent, black 15%, black 86%, transparent);
   mask-composite: intersect;
 }

@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import portrait from '../assets/anton-cv-portrait.png';
+import portrait from '../assets/anton-nebula-portrait.png';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Arrow from './Arrow.astro';
 import ProjectVisual from './ProjectVisual.astro';
@@ -118,8 +118,8 @@ const year = new Date().getFullYear();
               class="hero-portrait"
               src={portrait}
               alt={t.portraitAlt}
-              widths={[280, 349]}
-              sizes="(max-width: 767px) 80vw, 380px"
+              widths={[320, 480, 640, 960, 1254]}
+              sizes="(max-width: 767px) 94vw, 560px"
               loading="eager"
               fetchpriority="high"
               quality={90}

@@ -348,8 +348,11 @@ svg {
 }
 .portrait-space {
   position: absolute;
-  inset: 6% 0 -2% 0;
-  background: radial-gradient(ellipse at 57% 42%, #f28cc51c 0, transparent 57%);
+  width: min(380px, 80%);
+  aspect-ratio: 349 / 348;
+  left: 50%;
+  top: 49%;
+  transform: translate(-50%, -50%);
 }
 .hero-portrait {
   position: absolute;
@@ -359,7 +362,13 @@ svg {
   object-position: center bottom;
   border-radius: 0;
   mask-image:
-    linear-gradient(to bottom, black 0%, black 76%, transparent 99%),
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      black 4%,
+      black 76%,
+      transparent 99%
+    ),
     linear-gradient(to right, transparent, black 15%, black 86%, transparent);
   mask-composite: intersect;
 }

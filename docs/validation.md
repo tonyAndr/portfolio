@@ -10,7 +10,7 @@ Validated on 9 November 2026 with Node 22.23.4 and pinned npm dependencies:
 - `npm run format:check`: source and documentation formatting.
 - Independent deployment review: corrected failed-first-deployment cleanup and made revision verification reject a failed HTTP request.
 
-The language switch and hero-motion controller are bundled as external modules so nginx's `script-src 'self'` policy permits them without inline JavaScript. Native links and complete content work without JavaScript. Fine-pointer devices animate three wireframes and orbital rings with damped cursor inertia and slow CSS drift. A localized pause control stops both effects. Touch and reduced-motion devices use a static composition; hidden tabs and offscreen heroes suspend motion. The JavaScript frame loop stops after the spring settles. Smooth scrolling is disabled for reduced motion.
+The language switch and motion controllers are bundled as external modules so nginx's `script-src 'self'` policy permits them without inline JavaScript. Native links and complete content work without JavaScript. Three hero wireframes and orbital rings drift automatically; fine pointers also get damped cursor inertia. The user-requested interface has no pause button. The full website has a fixed animated purple aurora and a locally bundled tsParticles starfield with faint constellation links. It stays behind every page section as the visitor scrolls, with no click/hover interactions. Hidden tabs suspend rendering; offscreen hero geometry suspends independently. Reduced-motion preferences retain a static background. The hero JavaScript frame loop stops after the spring settles.
 
 ## Verification limits
 

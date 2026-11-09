@@ -1,0 +1,19 @@
+<div class="site-background" aria-hidden="true">
+  <div class="site-aurora aurora-violet"></div>
+  <div class="site-aurora aurora-rose"></div>
+  <div class="site-aurora aurora-deep"></div>
+  <div class="site-stars" id="site-stars" data-site-background></div>
+  <div class="site-vignette"></div>
+</div>
+
+<script>
+  import { initSiteBackground } from '../scripts/site-background';
+
+  const host = document.querySelector<HTMLElement>('[data-site-background]');
+  if (host) {
+    const disposeBackground = initSiteBackground(host);
+    window.addEventListener('pagehide', (event) => {
+      if (!event.persisted) disposeBackground();
+    });
+  }
+</script>

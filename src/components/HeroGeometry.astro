@@ -1,11 +1,3 @@
----
-interface Props {
-  pauseLabel: string;
-  resumeLabel: string;
-}
-const { pauseLabel, resumeLabel } = Astro.props;
----
-
 <div class="wireframe-field" aria-hidden="true">
   <div class="orbit-motion" data-motion-layer data-depth="-0.22">
     <div class="orbital-drift">
@@ -68,14 +60,3 @@ const { pauseLabel, resumeLabel } = Astro.props;
     </div>
   </div>
 </div>
-<button
-  class="motion-toggle"
-  type="button"
-  data-motion-toggle
-  data-pause-label={pauseLabel}
-  data-resume-label={resumeLabel}
-  aria-pressed="false"
-  hidden
->
-  {pauseLabel}
-</button>

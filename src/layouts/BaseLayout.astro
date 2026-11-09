@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import SiteBackground from '../components/SiteBackground.astro';
 interface Props {
   locale: 'en' | 'es';
   title: string;
@@ -56,6 +57,7 @@ const socialImage = `${origin}/og/${locale}.png`;
     <title>{title}</title>
   </head>
   <body>
+    <SiteBackground />
     <slot />
   </body>
 </html>

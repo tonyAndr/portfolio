@@ -148,6 +148,5 @@ export const en: PortfolioContent = {
       'This acknowledgement refers to support for my professional activity and does not imply institutional endorsement of this website or the services presented.',
   },
   footer: { backToTop: 'Back to top', note: 'Designed and built with care.' },
-  motion: { pause: 'Pause motion', resume: 'Resume motion' },
   portraitAlt: 'Portrait of Anton Andropov',
 };

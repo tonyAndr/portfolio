@@ -9,12 +9,11 @@ const DAMPING = 15;
 const MAX_DT = 0.05;
 const REST_EPSILON = 0.01;
 
-/** Adds optional, pointer-driven parallax to a hero and returns its disposer. */
+/** Adds optional idle and pointer motion to a hero; returns its disposer. */
 export function initHeroMotion(root: HTMLElement): () => void {
   const defaultView = root.ownerDocument.defaultView;
   if (!defaultView) return () => {};
   const view = defaultView;
-  const button = root.querySelector<HTMLButtonElement>('[data-motion-toggle]');
   const layers = Array.from(
     root.querySelectorAll<MotionLayer>('[data-motion-layer]'),
     (element) => ({
@@ -29,7 +28,6 @@ export function initHeroMotion(root: HTMLElement): () => void {
   const reducedMotion = view.matchMedia(
     '(prefers-reduced-motion: no-preference)',
   );
-  let paused = false;
   let visible = !root.ownerDocument.hidden;
   let inView = typeof view.IntersectionObserver !== 'function';
   let disposed = false;
@@ -43,27 +41,10 @@ export function initHeroMotion(root: HTMLElement): () => void {
   const initialTransforms = layers.map(
     ({ element }) => element.style.transform,
   );
-  const initialButtonState = button
-    ? {
-        hidden: button.hidden,
-        ariaPressed: button.getAttribute('aria-pressed'),
-        textContent: button.textContent,
-      }
-    : null;
 
-  const supportsMotion = () =>
-    hover.matches && finePointer.matches && reducedMotion.matches;
-  const active = () => supportsMotion() && inView && visible && !paused;
-
-  function updateButton(): void {
-    if (!button) return;
-    button.hidden = !supportsMotion();
-    button.setAttribute('aria-pressed', String(paused));
-    const label = paused
-      ? button.dataset.resumeLabel
-      : button.dataset.pauseLabel;
-    if (label) button.textContent = label;
-  }
+  const idleMotionActive = () => reducedMotion.matches && inView && visible;
+  const pointerMotionActive = () =>
+    idleMotionActive() && hover.matches && finePointer.matches;
 
   function render(): void {
     for (const { element, depth, rotation } of layers) {
@@ -103,20 +84,21 @@ export function initHeroMotion(root: HTMLElement): () => void {
 
   function sync(): void {
     if (disposed) return;
-    updateButton();
-    const shouldAnimate = active();
-    root.toggleAttribute('data-motion-active', shouldAnimate);
-    setPointerListening(shouldAnimate);
-    if (!shouldAnimate) zeroMotion();
+    const shouldRunIdleMotion = idleMotionActive();
+    const shouldTrackPointer = pointerMotionActive();
+    root.toggleAttribute('data-motion-active', shouldRunIdleMotion);
+    setPointerListening(shouldTrackPointer);
+    if (!shouldTrackPointer) zeroMotion();
   }
 
   function schedule(): void {
-    if (frame === null && active()) frame = view.requestAnimationFrame(animate);
+    if (frame === null && pointerMotionActive())
+      frame = view.requestAnimationFrame(animate);
   }
 
   function animate(timestamp: number): void {
     frame = null;
-    if (!active()) {
+    if (!pointerMotionActive()) {
       zeroMotion();
       sync();
       return;
@@ -165,7 +147,7 @@ export function initHeroMotion(root: HTMLElement): () => void {
   }
 
   function onPointerMove(event: PointerEvent): void {
-    if (!active() || event.pointerType === 'touch') return;
+    if (!pointerMotionActive() || event.pointerType === 'touch') return;
     const width = rect.width;
     const height = rect.height;
     if (width <= 0 || height <= 0) return;
@@ -177,22 +159,17 @@ export function initHeroMotion(root: HTMLElement): () => void {
   }
 
   function onPointerLeave(): void {
-    if (!active()) return;
+    if (!pointerMotionActive()) return;
     target = { x: 0, y: 0, rotation: 0 };
     schedule();
   }
 
   function refreshRect(): void {
-    if (active()) rect = root.getBoundingClientRect();
+    if (pointerMotionActive()) rect = root.getBoundingClientRect();
   }
 
   function onVisibilityChange(): void {
     visible = !root.ownerDocument.hidden;
-    sync();
-  }
-
-  function onToggle(): void {
-    paused = !paused;
     sync();
   }
 
@@ -206,8 +183,6 @@ export function initHeroMotion(root: HTMLElement): () => void {
     passive: true,
     capture: true,
   });
-  button?.addEventListener('click', onToggle);
-
   const observer =
     typeof view.IntersectionObserver === 'function'
       ? new view.IntersectionObserver((entries) => {
@@ -235,20 +210,12 @@ export function initHeroMotion(root: HTMLElement): () => void {
     );
     view.removeEventListener('resize', refreshRect);
     view.removeEventListener('scroll', refreshRect, true);
-    button?.removeEventListener('click', onToggle);
     setPointerListening(false);
     root.removeAttribute('data-motion-active');
     zeroMotion();
     layers.forEach(({ element }, index) => {
       element.style.transform = initialTransforms[index];
     });
-    if (button && initialButtonState) {
-      button.hidden = initialButtonState.hidden;
-      if (initialButtonState.ariaPressed === null)
-        button.removeAttribute('aria-pressed');
-      else button.setAttribute('aria-pressed', initialButtonState.ariaPressed);
-      button.textContent = initialButtonState.textContent;
-    }
   };
 }
 

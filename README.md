@@ -29,13 +29,14 @@ node scripts/smoke.mjs http://127.0.0.1:54321 # Verify a running nginx container
 - `src/data/`: confirmed public identity and links.
 - `src/components/`: shared page and original conceptual project illustrations.
 - `src/layouts/`: document language, canonical, social, and alternate-language metadata.
-- `src/styles/`: responsive layout, self-hosted fonts, nebula composition, reduced-motion rules.
+- `src/styles/`: responsive layout, self-hosted fonts, full-page aurora composition, reduced-motion rules.
+- `src/scripts/`: inertial hero geometry and the autonomous tsParticles background lifecycle.
 - `src/assets/`: prepared portrait; Astro emits appropriately sized WebP variants.
 - `public/`: favicon, social cards, official institutional assets, and font licenses.
 - `tests/`: built-site regression checks using Node's test runner.
 - `deploy/`: container, static-server configuration, and restricted deployment receiver.
 
-Raw CVs, private award paperwork, reference images, and interview notes are deliberately excluded from Git and the Docker context. `portfolio-agent-handoff/` is local input, never web content. CV downloads are omitted until public versions are selected. No analytics, cookies, database, or contact backend is used.
+Raw CVs, private award paperwork, reference images, and interview notes are deliberately excluded from Git and the Docker context. `portfolio-agent-handoff/` is local input, never web content. CV downloads are omitted until public versions are selected. No analytics, cookies, database, or contact backend is used. The page-wide background uses locally bundled tsParticles modules and CSS auroras; it has no external runtime requests or cursor interactions. Animation starts automatically, suspends in hidden tabs, and respects the system reduced-motion preference.
 
 ## Production
 

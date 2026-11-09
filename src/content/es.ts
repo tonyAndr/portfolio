@@ -157,6 +157,5 @@ export const es: PortfolioContent = {
     backToTop: 'Volver arriba',
     note: 'Diseñado y desarrollado con cuidado.',
   },
-  motion: { pause: 'Pausar animación', resume: 'Reanudar animación' },
   portraitAlt: 'Retrato de Anton Andropov',
 };

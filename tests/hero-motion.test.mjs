@@ -88,33 +88,14 @@ function fixture({
   document.defaultView = view;
   const style = { transform: 'scale(1.2)' };
   const layer = { dataset: { depth: '0.55', rotation: '7' }, style };
-  const button = Object.assign(new FakeTarget(), {
-    hidden: true,
-    dataset: { pauseLabel: 'Pause motion', resumeLabel: 'Resume motion' },
-    textContent: 'Pause motion',
-    attributes: new Map([['aria-pressed', 'false']]),
-    setAttribute(name, value) {
-      this.attributes.set(name, value);
-    },
-    getAttribute(name) {
-      return this.attributes.get(name) ?? null;
-    },
-    removeAttribute(name) {
-      this.attributes.delete(name);
-    },
-  });
   const root = Object.assign(new FakeTarget(), {
     ownerDocument: document,
     attributes: new Set(),
     layer,
-    button,
     getBoundingClientRectCalls: 0,
     getBoundingClientRect() {
       this.getBoundingClientRectCalls++;
       return { left: 100, top: 50, width: 200, height: 100 };
-    },
-    querySelector(selector) {
-      return selector === '[data-motion-toggle]' ? button : null;
     },
     querySelectorAll(selector) {
       return selector === '[data-motion-layer]' ? [layer] : [];
@@ -132,7 +113,6 @@ function fixture({
   });
   return {
     root,
-    button,
     layer,
     style,
     view,
@@ -186,51 +166,51 @@ test('parallax follows bounded pointer targets, settles, and eases back on leave
   assert.equal(style.transform, 'scale(1.2)');
 });
 
-test('pause, reduced-motion changes, visibility, and intersection reset without losing user pause', () => {
-  const { root, button, layer, view, document, mediaQueries } = fixture();
+test('idle motion works on coarse pointers; parallax requires hover and fine pointer', () => {
+  const { root, layer, view, document, mediaQueries } = fixture({
+    finePointer: false,
+  });
   const cleanup = initHeroMotion(root);
   view.lastObserver.intersect(true);
-  assert.equal(button.hidden, false);
-  assert.equal(button.getAttribute('aria-pressed'), 'false');
+  assert.equal(root.hasAttribute('data-motion-active'), true);
+  assert.equal(root.listenerCount('pointermove'), 0);
   root.dispatch('pointermove', {
     pointerType: 'mouse',
     clientX: 300,
     clientY: 100,
   });
-  button.dispatch('click');
-  assert.equal(button.textContent, 'Resume motion');
-  assert.equal(button.getAttribute('aria-pressed'), 'true');
+  assert.equal(view.frameCount(), 0);
+
+  mediaQueries.get('(pointer: fine)').set(true);
+  assert.equal(root.hasAttribute('data-motion-active'), true);
+  assert.equal(root.listenerCount('pointermove'), 1);
+  root.dispatch('pointermove', {
+    pointerType: 'mouse',
+    clientX: 300,
+    clientY: 100,
+  });
+  assert.equal(view.frameCount(), 1);
+
+  mediaQueries.get('(prefers-reduced-motion: no-preference)').set(false);
   assert.equal(root.hasAttribute('data-motion-active'), false);
+  assert.equal(view.frameCount(), 0);
   assert.equal(
     layer.style.transform,
     'translate3d(0.000px, 0.000px, 0) rotate(7.000deg)',
   );
-  document.hidden = true;
-  document.dispatch('visibilitychange');
-  document.hidden = false;
-  document.dispatch('visibilitychange');
-  assert.equal(button.getAttribute('aria-pressed'), 'true');
-  button.dispatch('click');
-  assert.equal(root.hasAttribute('data-motion-active'), true);
-  mediaQueries.get('(prefers-reduced-motion: no-preference)').set(false);
-  assert.equal(button.hidden, true);
-  assert.equal(root.hasAttribute('data-motion-active'), false);
   mediaQueries.get('(prefers-reduced-motion: no-preference)').set(true);
   assert.equal(root.hasAttribute('data-motion-active'), true);
   cleanup();
   assert.equal(view.listenerCount('resize'), 0);
   assert.equal(view.listenerCount('scroll'), 0);
   assert.equal(root.listenerCount('pointermove'), 0);
+  assert.equal(root.listenerCount('pointerleave'), 0);
   assert.equal(document.listenerCount('visibilitychange'), 0);
-  assert.equal(button.listenerCount('click'), 0);
   for (const query of mediaQueries.values())
     assert.equal(query.listenerCount('change'), 0);
   assert.equal(view.lastObserver.disconnected, true);
   assert.equal(view.frameCount(), 0);
   assert.equal(root.hasAttribute('data-motion-active'), false);
-  assert.equal(button.hidden, true);
-  assert.equal(button.getAttribute('aria-pressed'), 'false');
-  assert.equal(button.textContent, 'Pause motion');
   assert.equal(layer.style.transform, 'scale(1.2)');
 });
 
@@ -254,23 +234,6 @@ test('touch pointers are ignored and out-of-view motion is reset and resumed at 
   observer.intersect(true);
   assert.equal(root.hasAttribute('data-motion-active'), true);
   cleanup();
-});
-
-test('coarse pointers and reduced-motion preference never activate or schedule frames', () => {
-  for (const options of [{ finePointer: false }, { noPreference: false }]) {
-    const { root, button, view } = fixture(options);
-    const cleanup = initHeroMotion(root);
-    view.lastObserver.intersect(true);
-    root.dispatch('pointermove', {
-      pointerType: 'mouse',
-      clientX: 300,
-      clientY: 100,
-    });
-    assert.equal(button.hidden, true);
-    assert.equal(root.hasAttribute('data-motion-active'), false);
-    assert.equal(view.frameCount(), 0);
-    cleanup();
-  }
 });
 
 test('a hidden tab cancels pending motion and returns at origin when visible', () => {

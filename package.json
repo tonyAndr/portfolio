@@ -19,6 +19,10 @@
     "@fontsource-variable/inter": "5.3.0",
     "@fontsource-variable/space-grotesk": "5.3.0",
     "@tailwindcss/vite": "4.3.5",
+    "@tsparticles/basic": "4.5.3",
+    "@tsparticles/engine": "4.5.3",
+    "@tsparticles/interaction-particles-links": "4.5.3",
+    "@tsparticles/plugin-interactivity": "4.5.3",
     "astro": "7.4.7",
     "tailwindcss": "4.3.5"
   },

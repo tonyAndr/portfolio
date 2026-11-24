@@ -786,13 +786,6 @@ h2 {
   font-size: 14px;
   letter-spacing: 0.07em;
 }
-.concept-label {
-  display: block;
-  margin-top: 10px;
-  text-align: right;
-  color: #ad91b9;
-  font-size: 14px;
-}
 .flow-node {
   position: absolute;
   border: 1px solid #8d629c;

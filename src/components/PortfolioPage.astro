@@ -283,6 +283,16 @@ const year = new Date().getFullYear();
           </a>
           <!--/email_off-->
           <div class="social-links">
+            <a
+              class="text-link"
+              href={`/cv/anton-andropov-cv-${locale}.pdf`}
+              type="application/pdf"
+              rel="nofollow"
+              download
+            >
+              {t.contact.cvLabel}
+              <Arrow diagonal />
+            </a>
             <a class="text-link" href={profile.github}>
               GitHub
               <Arrow diagonal />

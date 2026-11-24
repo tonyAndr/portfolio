@@ -42,7 +42,13 @@ export interface PortfolioContent {
     title: string;
     groups: { title: string; items: string[] }[];
   };
-  contact: { eyebrow: string; title: string; body: string; emailLabel: string };
+  contact: {
+    eyebrow: string;
+    title: string;
+    body: string;
+    emailLabel: string;
+    cvLabel: string;
+  };
   support: { title: string; body: string; disclaimer: string };
   footer: { backToTop: string; note: string };
   portraitAlt: string;

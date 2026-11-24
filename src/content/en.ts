@@ -89,7 +89,7 @@ export const en: PortfolioContent = {
       contribution:
         'Across this product family, built backend functionality and APIs, worked on React interfaces, and integrated AI embeddings and similarity-scoring features.',
       stack: ['PHP', 'Node.js', 'React', 'WordPress', 'MySQL', 'PostgreSQL'],
-      links: [{ label: 'CherryLink', url: 'https://cherrylink.ru/' }],
+      links: [{ label: 'CherryLink', url: 'https://cherrylink.app/' }],
       visual: 'cherry',
     },
     {
@@ -140,6 +140,7 @@ export const en: PortfolioContent = {
     title: 'Have a project in mind?',
     body: 'For project enquiries or a professional conversation, get in touch by email or find me on GitHub and LinkedIn.',
     emailLabel: 'Email Anton',
+    cvLabel: 'Download CV (PDF)',
   },
   support: {
     title: 'With support from the Junta de Andalucía',

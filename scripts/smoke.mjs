@@ -38,6 +38,18 @@ for (const [pathname, language] of [
   }
   console.log(`PASS ${pathname} (${language}, ${assets.size} assets)`);
 }
+for (const locale of ['en', 'es']) {
+  const cv = await fetchPage(`/cv/anton-andropov-cv-${locale}.pdf`);
+  assert.equal(cv.status, 200, `CV ${locale}`);
+  assert.match(cv.headers.get('content-type'), /application\/pdf/);
+  assert.match(cv.headers.get('x-robots-tag'), /noindex/);
+  assert.equal(cv.headers.get('x-content-type-options'), 'nosniff');
+  await cv.arrayBuffer();
+}
+const home = await fetchPage('/');
+assert.equal(home.headers.get('x-robots-tag'), null);
+await home.arrayBuffer();
+console.log('PASS /cv/ (noindex, security headers kept)');
 const redirect = await fetchPage('/es?from=smoke');
 assert.equal(redirect.status, 308);
 const destination = new URL(redirect.headers.get('location'), origin);

@@ -63,6 +63,8 @@ test('build excludes source documents, private notes, and environment files', as
     for (const entry of await readdir(dir, { withFileTypes: true })) {
       const file = path.join(dir, entry.name);
       if (entry.isDirectory()) await walk(file);
+      else if (/^dist\/cv\/anton-andropov-cv-(en|es)\.pdf$/.test(file))
+        continue;
       else
         assert.doesNotMatch(
           file,
@@ -80,7 +82,19 @@ test('sitemap, robots, and real error page exist', async () => {
   assert.equal((sitemap.match(/<url>/g) || []).length, 2);
   assert.match(
     await readFile('dist/robots.txt', 'utf8'),
-    /Sitemap: https:\/\/apov.dev\/sitemap.xml/,
+    /Disallow: \/cv\/\n[\s\S]*Sitemap: https:\/\/apov.dev\/sitemap.xml/,
   );
   assert.match(await readFile('dist/404.html', 'utf8'), /noindex, follow/);
+});
+
+test('each locale links its own public CV and CherryLink', async () => {
+  for (const [locale, file] of locales) {
+    const html = await readFile(`dist/${file}`, 'utf8');
+    assert.match(
+      html,
+      new RegExp(`href="/cv/anton-andropov-cv-${locale}\\.pdf"`),
+    );
+    assert.match(html, /href="https:\/\/cherrylink\.app\/"/);
+    assert.ok((await stat(`dist/cv/anton-andropov-cv-${locale}.pdf`)).size > 0);
+  }
 });
